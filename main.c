@@ -220,6 +220,8 @@ int getAction_User() //user
 	int continueNum = 1;
 	
 	do{
+		printUserCardStatus(0, cardCount[0]);
+		printf("Action? (0 - go, others - stay) : ");
 		Choose_Action = getIntegerInput();
 		calcStepResult(0,cardCount[0]);
 	
@@ -253,7 +255,8 @@ int getAction_Auto(int player) //players
 	int continueNum = 1;
 	
 	do{
-		calcStepResult(0,cardCount[0]);
+		calcStepResult(player,cardCount[player]);
+		printUserCardStatus(player, cardCount[player]);
 		
 		if(cardSum[player]<17)
 		{	//다시카드한장을 뽑도록한다
@@ -354,7 +357,7 @@ int checkResult_Auto(int player)
 		{
 			dollar[player] = dollar[player] - bet[player];
 			
-			printf("   -> player %d's result : lose... Dealer was BlackJack! ($%d)\n", player, cardSum[player], dollar[player]);
+			printf("   -> player %d's result : lose... Dealer was BlackJack! --> $%d\n", player, cardSum[player], dollar[player]);
 		}
 		else
 		{
@@ -373,7 +376,7 @@ int checkResult_Auto(int player)
 	{
 		dollar[player] = dollar[player] - bet[player];
 		
-		printf("   -> player %d's result : lose... due to overflow! ($%d)\n", player, cardSum[player], dollar[player]);
+		printf("   -> player %d's result : lose... due to overflow! --> $%d\n", player, dollar[player]);
 	}
 	
 	checkDollar();
@@ -443,7 +446,7 @@ int main(int argc, char *argv[])
 	mixCardTray();
 	
 	//Game start --------
-	do 
+	while (gameEnd == 0) 
 	{	roundIndex++;
 		
 		printf("--------------------------------------------------------------\n");
@@ -470,11 +473,7 @@ int main(int argc, char *argv[])
 		int continueNum = 0;
 			
 		printf(">>> my turn! ---------------------\n"); //사용자 턴  
-		
-		//print current card status 
-		printUserCardStatus(0,cardCount[0]);
-		printf("::: Action? (0 - go, others - stay) : ");
-		//GO? STOP? ::: getAction()
+		//GO? STOP? ::: 	
 		getAction_User();
 		//check the card status :::
 		calcStepResult(0,cardCount[0]);
@@ -483,26 +482,19 @@ int main(int argc, char *argv[])
 		for (i=1;i<n_user;i++) //each player's turn
 		{	
 			printf("\n>>> player %d turn! -------------\n", i);
-			
+			//GO? STOP? ::: 	
 			getAction_Auto(cardSum[i]);
-			//print current card status
-			printUserCardStatus(i,cardCount[i]);
-			//GO? STOP? ::: by getAction()
-			calcStepResult(i,cardCount[i]);
 			//check the card status :::
-			//check if the turn ends or not
+			calcStepResult(i,cardCount[i]);
+
 		}
 	
 		printf("\n>>> server turn! ------------------\n");
-	
-		//print current card status 
-		printUserCardStatus(n_user, cardCount[n_user]);
 		//GO? STOP? ::: 
 		getAction_Auto(n_user);
 		//check the card status ::: 
 		calcStepResult(n_user,cardCount[n_user]);
 		//check if the turn ends or not?	
-	
 		printf("[[[[[[[ server result is ....  %d ]]]]]]]\n", cardSum[n_user]);
 		
 		//result
@@ -516,7 +508,7 @@ int main(int argc, char *argv[])
 		//게임을 더 진행할지 말지 결정  
 		checkGameEnd();
 		
-	} while (gameEnd == 0);
+	}
 	
 	checkWinner();
 	
