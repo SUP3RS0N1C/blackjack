@@ -96,7 +96,7 @@ int mixCardTray(void)
 		}
 	}
 	
-	printf(" --> card is mixed and put into the tray.");
+	printf(" --> card is mixed and put into the tray.\n");
 }
 
 //get one card from the tray
@@ -139,11 +139,11 @@ void offerCards(void)
 void printCardInitialStatus(void) 
 {	int i;
 	
-	printf(" --- server      : X ");
+	printf(" --- server     : X ");
 	printCard(cardhold[n_user][1]);
 	printf("\n");
 	
-	printf("  -> you         : ");
+	printf("  -> you        : ");
 	printCard(cardhold[0][0]);
 	printCard(cardhold[0][1]);
 	printf("\n");
@@ -174,7 +174,7 @@ int calcStepResult(int user,int cardcnt)
 	
 	for(i=0;i<cardcnt;i++)
 	{
-		cardSum[user] = cardSum[user] + cardhold[user][i];
+		cardSum[user] = cardSum[user] + getCardNum(cardhold[user][i]);
 	}
 	//A카드의 존재 여부 확인  
 	for(i=0;i<cardcnt;i++)
@@ -201,23 +201,38 @@ int calcStepResult(int user,int cardcnt)
 int getAction_User() //user
 {	int Choose_Action;
 	int pulledCard;
+	int continueNum = 1;
 	
 	do{
 		Choose_Action = getIntegerInput();
+		calcStepResult(0,cardCount[0]);
 	
 		if(Choose_Action==0)
 		{	//다시카드한장을 뽑도록한다  
-			pullCard();
-			cardSum[0] = cardSum[0] + getCardNum(pulledCard);
 			cardCount[0]++;
+			pulledCard = pullCard();
+			cardhold[0][cardCount[0]] = pulledCard;
+			
+			//**************************************************************체크용**************************** 
+			printf("%d\n", cardhold[0][cardCount[0]]);
+			printCard(cardhold[0][cardCount[0]]);
+			//카드뽑기랑 프린트카드는 문제없음  
+			//********************************************************************************************
+			calcStepResult(0,cardCount[0]);
+			
+			break;
 		}
 		else
 		{	//카드뽑기를 그만둔다 
-			return 0;
+			continueNum = 0;
+			break;
 		}
-	}while(cardSum[0]<=21);
+	}while(cardSum[0]<22&&continueNum==1);
 	
-	printf("DEAD..(sum: %d)", cardSum);
+	if(cardSum[0]>21)
+	{
+		printf("DEAD..(sum: %d)\n", cardSum[0]);
+	}
 	
 	return 0;
 }
@@ -225,23 +240,30 @@ int getAction_User() //user
 int getAction_Auto(int player) //players
 {	int pulledCard;
 	int cardcnt = 2;
+	int continueNum = 1;
 	
 	do{
+		calcStepResult(0,cardCount[0]);
+		
 		if(cardSum[player]<17)
 		{	//다시카드한장을 뽑도록한다
-			printf(" GO!");
+			printf(" GO!\n");
 			
-			pullCard();
-			cardSum[player] = cardSum[player] + getCardNum(pulledCard);
 			cardCount[player]++;
+			pulledCard = pullCard();
+			cardhold[player][cardCount[player]] = pulledCard;
+			calcStepResult(player, cardCount[player]);
 		}
 		else
 		{	//카드뽑기를 그만둔다 
-			printf(" STAY!");
+			printf(" STAY!\n");
+			
+			continueNum = 0;
+			break;
 		}
-	}while(cardSum[player]<=21);
+	}while(cardSum[player]<=21&&continueNum==1);
 	
-	printf("DEAD..(sum: %d)", cardSum[player]);
+	printf("DEAD..(sum: %d)\n", cardSum[player]);
 	
 	return 0;
 }
@@ -258,7 +280,7 @@ int checkResult_User()
 		{
 			if(cardSum[n_user]>cardSum[0])
 			{
-				dollar[0] = dollar[0]-bet[0];
+				dollar[0] = dollar[0] - bet[0];
 				
 				printf("   -> your result : lose (sum:%d) --> $%d\n", cardSum[0], dollar[0]);	
 			}
@@ -430,59 +452,63 @@ int main(int argc, char *argv[])
 		{
 			cardCount[i] = 2;
 		}
-		printf(" ---------------------------------------------------------\n\n"); 
+		printf(" ---------------------------------------------------------\n"); 
 		printf("\n-------------------- GAME start ------------------------\n");
 		
-		while ((cardSum[0]>0&&cardSum[0]<22)) //do until the player dies or player says stop
+		do //do until the player dies or player says stop
+		{
+			int userAction = 0;
+			
+			do //do until the player dies or player says stop
 			{
-				int userAction = 0;
-				
-				printf(">>> my turn! ---------------------"); //사용자 턴  
+				printf(">>> my turn! ---------------------\n"); //사용자 턴  
 				//print current card status 
-				printUserCardStatus(0, cardCount[0]);
-				printf("::: Action? (0 - go, others - stay)");
-				//check the card status :::
-				calcStepResult(0,cardCount[0]);
+				printUserCardStatus(0,cardCount[0]);
+				printf("::: Action? (0 - go, others - stay) : ");
 				//GO? STOP? ::: getAction()
 				getAction_User(cardSum[0]);
+				//check the card status :::
+				calcStepResult(0,cardCount[0]);
 				//check if the turn ends or not
+			}while (cardSum[0]>0&&cardSum[0]<22);
+			
+			
+			for (i=1;i<n_user;i++) //each player's turn
+			{	
+				printf(">>> player %d turn! -------------\n", i);
 				
-				for (i=1;i<n_user;i++) //each player's turn
-				{	
-					printf(">>> player %d turn! -------------", i);
-					
-					getAction_Auto(i);
-					while (cardSum[i]>0&&cardSum[i]<22) //do until the player dies or player says stop
-					{
-						int tempCalcResult;
-						//print current card status
-						printUserCardStatus(i,cardCount[i]);
-						//check the card status ::: 
-						calcStepResult(i,cardCount[i]);
-						//GO? STOP? ::: by getAction()
-						getAction_Auto(cardSum[i]);
-						//check if the turn ends or not
-					}
-				}
+				getAction_Auto(i);
+				
+				do
+				{
+					int tempCalcResult;
+					//print current card status
+					printUserCardStatus(i,cardCount[i]);
+					//GO? STOP? ::: by getAction()
+					getAction_Auto(cardSum[i]);
+					//check the card status :::
+					//check if the turn ends or not
+				}while (cardSum[i]>0&&cardSum[i]<22); //do until the player dies or player says stop
 			}
+		}while (cardSum[0]>0&&cardSum[0]<22);
 		
-			printf(">>> server turn! ------------------");
-			do
+			printf(">>> server turn! ------------------\n");
+			do //do until the player dies or player says stop
 			{
 				//print current card status 
 				printUserCardStatus(n_user, cardCount[n_user]);
-				//check the card status ::: 
-				calcStepResult(n_user,cardCount[n_user]);
 				//GO? STOP? ::: 
 				getAction_Auto(n_user);
+				//check the card status ::: 
+				calcStepResult(n_user,cardCount[n_user]);
 				//check if the turn ends or not
-			}while ((cardSum[n_user]>0&&cardSum[n_user]<22)); //do until the player dies or player says stop
-			printf("[[[[[[[ server result is ....  %d ]]]]]]]", cardSum[n_user]);
+			}while ((cardSum[n_user]>0&&cardSum[n_user]<22)); 
+			printf("[[[[[[[ server result is ....  %d ]]]]]]]\n", cardSum[n_user]);
 		//result
-		printf("-------------------- ROUND %d result ....", roundIndex);
+		printf("-------------------- ROUND %d result ....\n", roundIndex);
 		//check result
 		checkResult_User();
-		for(i=0;i<n_user;i++)
+		for(i=1;i<n_user;i++)
 		{
 			checkResult_Auto(i);
 		}

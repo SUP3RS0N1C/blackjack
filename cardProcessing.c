@@ -20,7 +20,7 @@ int getCardNum(int cardNum)
 		   num_forSum = 10;
 		   break;
 		default: //2~10까지는 수 자체를 더한다  
-		   num_forSum = (cardNum -1) % 13 + 1;
+		   num_forSum = ((cardNum -1)%13) + 1;
 		   break; 
 	}
 	
@@ -61,7 +61,7 @@ void printCard(int cardNum)
 		   printf("K \t");
 		   break;
 		default : //2~9까지는 수 자체를 더하도록 함  
-		   printf("%d \t", (cardNum -1) % 13 + 1);
+		   printf("%d \t", ((cardNum -1) % 13) + 1);
 		   break;
 	 }
 }
