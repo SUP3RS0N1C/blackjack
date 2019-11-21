@@ -17,11 +17,20 @@ int checkGameEnd()
 //카드트레이에 남은 카드의 갯수를 확인, 카드가 소진될 시 게임 종료 
 int checkCardTray()
 {
+	if(cardIndex>N_CARDSET*N_CARD - n_user*2)
+	{
+		printf("Card ran out of the tray!! Finishing the game...");
+		
+		gameEnd = 1;
+		
+		return 1;
+	}
+	
 	if(cardIndex==N_CARDSET*N_CARD)
 	{
-		printf("card ran out of the tray!! finishing the game...");
+		printf("Card ran out of the tray!! Finishing the game...");
 		
-		gameEnd =1;
+		gameEnd = 1;
 		
 		return 1;
 	}
@@ -42,7 +51,7 @@ int checkDollar()
 	{
 		if(dollar[i]<1)
 		{
-			printf("You're PASANed...");
+			printf("One of the players is bankrupted. Finishing the game...");
 			
 			gameEnd =1;
 			
