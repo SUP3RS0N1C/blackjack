@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=1
 CompilerSettings=0000000000000000001000000
-UnitCount=8
+UnitCount=4
 
 [VersionInfo]
 Major=1
@@ -60,38 +60,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit2]
-FileName=betting.c
-CompileCpp=0
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
-FileName=defining.h
-CompileCpp=0
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit4]
-FileName=checkWinner.c
-CompileCpp=0
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit5]
-FileName=utilityFunctions.c
+FileName=checkGameEnd.c
 CompileCpp=0
 Folder=
 Compile=1
@@ -101,7 +71,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=cardProcessing.c
+FileName=checkGameEnd.c
 CompileCpp=0
 Folder=
 Compile=1
@@ -111,7 +81,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=getAction.c
+FileName=checkGameEnd.c
 CompileCpp=0
 Folder=
 Compile=1
@@ -121,6 +91,36 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
+FileName=checkGameEnd.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+FileName=defining.h
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit3]
+FileName=cardProcessing.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit4]
 FileName=checkGameEnd.c
 CompileCpp=0
 Folder=

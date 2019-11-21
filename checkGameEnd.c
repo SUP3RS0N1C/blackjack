@@ -1,3 +1,11 @@
+#include "defining.h" 
+
+extern int n_user;
+extern int gameEnd;
+extern int cardIndex;
+extern int dollar[N_MAX_USER];
+
+
 //게임 종료 여부 판단
 int checkGameEnd()
 {
@@ -28,18 +36,23 @@ int checkCardTray()
 //남은 배팅액을 확인, 자본을 모두 소진하였을 경우 게임 종료
 int checkDollar()
 {
-	if(dollar[i]<1)
+	int i;
+	
+	for(i=0;i<n_user;i++)
 	{
-		printf("You're PASANed...");
-		
-		gameEnd =1;
-		
-		return 1; 
-	}
-	else
-	{
-		gameEnd =0;
-		
-		return 0;
+		if(dollar[i]<1)
+		{
+			printf("You're PASANed...");
+			
+			gameEnd =1;
+			
+			return 1; 
+		}
+		else
+		{
+			gameEnd =0;
+			
+			return 0;
+		}
 	}
 } 
