@@ -14,7 +14,7 @@ int checkWinner()
 	{
         if (cardSum[i] > cardSumMax) 
 		{
-            cardSumMax = arr[i];
+            cardSumMax = cardSum[i];
         }
     }
 	winnerSum = cardSumMax; //최대 자본값을 winnerSum에 배정  
@@ -39,4 +39,6 @@ int checkWinner()
 	{	
 		printf("player 4 is winner.",);
 	}
+	
+	return 0; 
 }
